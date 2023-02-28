@@ -1,0 +1,6 @@
+flp22-fun
+*.hi
+*.o
+__pycache__
+.vscode
+mockup.py
