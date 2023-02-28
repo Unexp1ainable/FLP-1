@@ -1,5 +1,7 @@
 module Knapsack where
 
+import TextEditing
+
 -- Item of Knapsack
 data Item = Item
   { weight :: Int,
@@ -16,12 +18,6 @@ data Knapsack = Knapsack
     minCost :: Int,
     items :: [Item]
   }
-
--- helper functions for formatting output
-removeLast :: [a] -> [a]
-removeLast [] = []
-removeLast [_] = []
-removeLast (x : xs) = x : removeLast xs
 
 -- change format of default Show string
 -- remove last \t and prepend additional \t
