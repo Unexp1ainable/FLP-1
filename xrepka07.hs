@@ -1,5 +1,6 @@
 module Main where
 
+import Data.Bifunctor qualified
 import Knapsack
 import KnapsackParser
 import System.Environment (getArgs)
@@ -17,6 +18,44 @@ parseArgs [x]
   | x == "-o" = Just OPTIMIZE
   | otherwise = Nothing
 parseArgs _ = Nothing
+
+enumerateCombinations :: Int -> [[Int]]
+enumerateCombinations 0 = []
+enumerateCombinations 1 = [[0], [1]]
+enumerateCombinations len = [0 : x | x <- rest] ++ [1 : x | x <- rest]
+  where
+    rest = enumerateCombinations (len - 1)
+
+sumAccordingToFlags :: [Item] -> [Int] -> (Weight, Cost)
+sumAccordingToFlags [] [] = (0, 0)
+sumAccordingToFlags ((Item weight cost) : items) (flag : flags) =
+  if flag == 1
+    then Data.Bifunctor.bimap (weight +) (cost +) rest -- that was language server, not me
+    else rest
+  where
+    rest = sumAccordingToFlags items flags
+
+selectBest :: Weight -> Cost -> [([Int], Weight, Cost)] -> [Int]
+selectBest maxWeight minCost items =
+  fst $
+    foldr
+      ( \(flags, weight, cost) (tmpMaxflags, tmpMaxCost) ->
+          if weight <= maxWeight && cost >= minCost && cost > tmpMaxCost then (flags, cost) else (tmpMaxflags, tmpMaxCost)
+      )
+      ([0], 0)
+      items
+
+bruteforce :: Knapsack -> [Int]
+bruteforce (Knapsack maxWeight minCost items) =
+  selectBest maxWeight minCost $
+    [ (flags, weight, cost)
+      | flags <- allFlagCombinations,
+        let (weight, cost) = sumAccordingToFlags items flags,
+        weight <= maxWeight,
+        cost >= minCost
+    ]
+  where
+    allFlagCombinations = enumerateCombinations $ length items
 
 ------------------------------------
 main :: IO ()

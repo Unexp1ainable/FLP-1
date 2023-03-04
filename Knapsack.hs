@@ -2,10 +2,14 @@ module Knapsack where
 
 import TextEditing (formatItemListStr)
 
+type Weight = Int
+
+type Cost = Int
+
 -- Item of Knapsack
 data Item = Item
-  { weight :: Int,
-    cost :: Int
+  { weight :: Weight,
+    cost :: Cost
   }
 
 instance Show Item where
@@ -14,8 +18,8 @@ instance Show Item where
 
 -- Knapsack type
 data Knapsack = Knapsack
-  { maxWeight :: Int,
-    minCost :: Int,
+  { maxWeight :: Weight,
+    minCost :: Cost,
     items :: [Item]
   }
 
