@@ -76,6 +76,8 @@ parseKnapsack = do
   weight <- parseKnapsackMaxWeight
   minCost <- parseKnapsackMinCost
   items <- parseKnapsackItems
+  spaces
+  _ <- string "}\n"
   return (Knapsack weight minCost items)
 
 knapsackParser :: String -> Either ParseError Knapsack
