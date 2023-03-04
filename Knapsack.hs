@@ -1,6 +1,6 @@
 module Knapsack where
 
-import TextEditing
+import TextEditing (formatItemListStr)
 
 -- Item of Knapsack
 data Item = Item
@@ -18,17 +18,6 @@ data Knapsack = Knapsack
     minCost :: Int,
     items :: [Item]
   }
-
--- change format of default Show string
--- remove last \t and prepend additional \t
-formatItemListStr :: String -> String
-formatItemListStr = removeLast . (++) "\t" . foldr format ""
-  where
-    format :: Char -> String -> String
-    format x acc
-      | x == '[' || x == ']' || x == ',' = acc
-      | x == '\n' = "\n\t" ++ acc
-      | otherwise = x : acc
 
 instance Show Knapsack where
   show :: Knapsack -> String

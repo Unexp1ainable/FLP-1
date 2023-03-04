@@ -1,6 +1,7 @@
 module Main where
 
 import Knapsack
+import KnapsackParser
 import System.Environment (getArgs)
 import System.Exit (die)
 
@@ -24,5 +25,7 @@ main = do
   let mode = parseArgs args
   maybe (die "Invalid arguments.") print mode
 
-  putStrLn "Done"
-  print (Item 10 10)
+  input <- getContents
+  case knapsackParser input of
+    Left err -> putStrLn $ "Error: " ++ show err
+    Right result -> putStrLn $ "Parsed input: \n" ++ show result
