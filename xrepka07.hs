@@ -1,6 +1,5 @@
 module Main where
 
-import Data.Bifunctor qualified
 import Knapsack
 import KnapsackParser
 import System.Environment (getArgs)
@@ -19,62 +18,21 @@ parseArgs [x]
   | otherwise = Nothing
 parseArgs _ = Nothing
 
-enumerateCombinations :: Int -> [[Int]]
-enumerateCombinations 0 = []
-enumerateCombinations 1 = [[0], [1]]
-enumerateCombinations len = [0 : x | x <- rest] ++ [1 : x | x <- rest]
-  where
-    rest = enumerateCombinations (len - 1)
-
-sumAccordingToFlags :: [Item] -> [Int] -> (Weight, Cost)
-sumAccordingToFlags [] [] = (0, 0)
-sumAccordingToFlags ((Item weight cost) : items) (flag : flags) =
-  if flag == 1
-    then Data.Bifunctor.bimap (weight +) (cost +) rest -- that was language server, not me
-    else rest
-  where
-    rest = sumAccordingToFlags items flags
-sumAccordingToFlags _ _ = (0, 0)
-
-selectBest :: Weight -> Cost -> [([Int], Weight, Cost)] -> [Int]
-selectBest maxWeight minCost items =
-  fst $
-    foldr
-      ( \(flags, weight, cost) (tmpMaxflags, tmpMaxCost) ->
-          if weight <= maxWeight && cost >= minCost && cost > tmpMaxCost then (flags, cost) else (tmpMaxflags, tmpMaxCost)
-      )
-      ([0], 0)
-      items
-
--- bruteforceUnformatted :: Knapsack -> [Int]
--- bruteforceUnformatted (Knapsack maxWeight minCost items) =
---   selectBest maxWeight minCost $
---     [ (flags, weight, cost)
---       | flags <- allFlagCombinations,
---         let (weight, cost) = sumAccordingToFlags items flags,
---         weight <= maxWeight,
---         cost >= minCost
---     ]
---   where
---     allFlagCombinations = enumerateCombinations $ length items
-bruteforceUnformatted :: Knapsack -> [Int]
-bruteforceUnformatted (Knapsack maxWeight minCost items) = result where (result, _, _) = buefore maxWeight minCost items
-
-buefore :: Weight -> Cost -> [Item] -> ([Int], Weight, Cost)
-buefore _ _ [] = ([], 0, 0)
-buefore maxWeight minCost [Item weight cost] = if maxWeight >= weight && minCost <= cost then ([1], weight, cost) else ([0], 0, 0)
-buefore maxWeight minCost ((Item weight cost) : items) =
+bruteforceUnformatted :: Weight -> Cost -> [Item] -> ([Int], Weight, Cost)
+bruteforceUnformatted _ _ [] = ([], 0, 0)
+bruteforceUnformatted maxWeight minCost [Item weight cost] = if maxWeight >= weight && minCost <= cost then ([1], weight, cost) else ([0], 0, 0)
+bruteforceUnformatted maxWeight minCost ((Item weight cost) : items) =
   if withCost + cost >= withoutCost && withWeight + weight <= maxWeight
     then (1 : withItems, withWeight + weight, withCost + cost)
     else (0 : withoutItems, withoutWeight, withoutCost)
   where
-    (withItems, withWeight, withCost) = buefore (maxWeight - weight) (minCost - cost) items
-    (withoutItems, withoutWeight, withoutCost) = buefore maxWeight minCost items
+    (withItems, withWeight, withCost) = bruteforceUnformatted (maxWeight - weight) (minCost - cost) items
+    (withoutItems, withoutWeight, withoutCost) = bruteforceUnformatted maxWeight minCost items
 
 bruteforce :: Knapsack -> Maybe [Int]
-bruteforce knapsack = if summed == 0 then Nothing else Just result
+bruteforce (Knapsack maxWeight minCost items) = if summed == 0 then Nothing else Just result
   where
-    result = bruteforceUnformatted knapsack
+    (result, _, _) = bruteforceUnformatted maxWeight minCost items
     summed = sum result
 
 ------------------------------------
@@ -95,4 +53,4 @@ main = do
       where
         formattedBruteforce knapsack = case bruteforce knapsack of
           Just solution -> print solution
-          Nothing -> print "False"
+          Nothing -> print False
