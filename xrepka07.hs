@@ -46,17 +46,30 @@ selectBest maxWeight minCost items =
       ([0], 0)
       items
 
+-- bruteforceUnformatted :: Knapsack -> [Int]
+-- bruteforceUnformatted (Knapsack maxWeight minCost items) =
+--   selectBest maxWeight minCost $
+--     [ (flags, weight, cost)
+--       | flags <- allFlagCombinations,
+--         let (weight, cost) = sumAccordingToFlags items flags,
+--         weight <= maxWeight,
+--         cost >= minCost
+--     ]
+--   where
+--     allFlagCombinations = enumerateCombinations $ length items
 bruteforceUnformatted :: Knapsack -> [Int]
-bruteforceUnformatted (Knapsack maxWeight minCost items) =
-  selectBest maxWeight minCost $
-    [ (flags, weight, cost)
-      | flags <- allFlagCombinations,
-        let (weight, cost) = sumAccordingToFlags items flags,
-        weight <= maxWeight,
-        cost >= minCost
-    ]
+bruteforceUnformatted (Knapsack maxWeight minCost items) = result where (result, _, _) = buefore maxWeight minCost items
+
+buefore :: Weight -> Cost -> [Item] -> ([Int], Weight, Cost)
+buefore _ _ [] = ([], 0, 0)
+buefore maxWeight minCost [Item weight cost] = if maxWeight >= weight && minCost <= cost then ([1], weight, cost) else ([0], 0, 0)
+buefore maxWeight minCost ((Item weight cost) : items) =
+  if withCost + cost >= withoutCost && withWeight + weight <= maxWeight
+    then (1 : withItems, withWeight + weight, withCost + cost)
+    else (0 : withoutItems, withoutWeight, withoutCost)
   where
-    allFlagCombinations = enumerateCombinations $ length items
+    (withItems, withWeight, withCost) = buefore (maxWeight - weight) (minCost - cost) items
+    (withoutItems, withoutWeight, withoutCost) = buefore maxWeight minCost items
 
 bruteforce :: Knapsack -> Maybe [Int]
 bruteforce knapsack = if summed == 0 then Nothing else Just result
