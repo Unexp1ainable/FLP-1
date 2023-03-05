@@ -34,6 +34,7 @@ sumAccordingToFlags ((Item weight cost) : items) (flag : flags) =
     else rest
   where
     rest = sumAccordingToFlags items flags
+sumAccordingToFlags _ _ = (0, 0)
 
 selectBest :: Weight -> Cost -> [([Int], Weight, Cost)] -> [Int]
 selectBest maxWeight minCost items =
@@ -45,8 +46,8 @@ selectBest maxWeight minCost items =
       ([0], 0)
       items
 
-bruteforce :: Knapsack -> [Int]
-bruteforce (Knapsack maxWeight minCost items) =
+bruteforceUnformatted :: Knapsack -> [Int]
+bruteforceUnformatted (Knapsack maxWeight minCost items) =
   selectBest maxWeight minCost $
     [ (flags, weight, cost)
       | flags <- allFlagCombinations,
@@ -56,6 +57,12 @@ bruteforce (Knapsack maxWeight minCost items) =
     ]
   where
     allFlagCombinations = enumerateCombinations $ length items
+
+bruteforce :: Knapsack -> Maybe [Int]
+bruteforce knapsack = if summed == 0 then Nothing else Just result
+  where
+    result = bruteforceUnformatted knapsack
+    summed = sum result
 
 ------------------------------------
 main :: IO ()
@@ -70,5 +77,9 @@ main = do
         Left err -> putStrLn $ "Error: " ++ show err
         Right knapsack -> case mode of
           ECHO -> print knapsack
-          BRUTEFORCE -> print knapsack
+          BRUTEFORCE -> formattedBruteforce knapsack
           OPTIMIZE -> print knapsack
+      where
+        formattedBruteforce knapsack = case bruteforce knapsack of
+          Just solution -> print solution
+          Nothing -> print "False"
