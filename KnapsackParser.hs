@@ -26,12 +26,13 @@ parseItemCost = do
 parseItem :: Parser Item
 parseItem = do
   spaces
-  _ <- string "Item {\n"
+  _ <- string "Item {"
+  spaces
   try
     ( do
         weight <- parseItemWeight
         cost <- parseItemCost
-        _ <- string "}\n"
+        _ <- string "}"
         spaces
         return (Item weight cost)
     )
@@ -39,7 +40,7 @@ parseItem = do
       ( do
           cost <- parseItemCost
           weight <- parseItemWeight
-          _ <- string "}\n"
+          _ <- string "}"
           spaces
           return (Item weight cost)
       )
@@ -49,7 +50,7 @@ parseKnapsackMaxWeight = do
   spaces
   _ <- string "maxWeight: "
   maxWeight <- many1 digit
-  _ <- string "\n"
+  spaces
   return (read maxWeight)
 
 parseKnapsackMinCost :: Parser Int
@@ -57,7 +58,7 @@ parseKnapsackMinCost = do
   spaces
   _ <- string "minCost: "
   minCost <- many1 digit
-  _ <- string "\n"
+  spaces
   return (read minCost)
 
 parseKnapsackItems :: Parser [Item]
@@ -72,12 +73,14 @@ parseKnapsackItems = do
 parseKnapsack :: Parser Knapsack
 parseKnapsack = do
   spaces
-  _ <- string "Knapsack {\n"
+  _ <- string "Knapsack {"
+  spaces
   weight <- parseKnapsackMaxWeight
   minCost <- parseKnapsackMinCost
   items <- parseKnapsackItems
   spaces
-  _ <- string "}\n"
+  _ <- string "}"
+  spaces
   return (Knapsack weight minCost items)
 
 knapsackParser :: String -> Either ParseError Knapsack
