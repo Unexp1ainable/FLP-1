@@ -11,10 +11,10 @@ mutationRate :: Double
 mutationRate = 0.01
 
 reproductionRate :: Double
-reproductionRate = 0.3
+reproductionRate = 0.4
 
 maxGenerations :: Int
-maxGenerations = 200
+maxGenerations = 5000
 
 selectedPopulationSize :: Int
 selectedPopulationSize = 200
@@ -92,7 +92,6 @@ nextGenerationF knapsack seed parents remaining =
     then []
     else nextGenerationF knapsack newSeed2 parents (remaining - length generated) ++ generated
   where
-    initialLength = length parents
     newParents = selectParents knapsack parents seed
     (reproductionRoll, newSeed1) = randomR (0.0, 1.0) seed
     children = if reproductionRoll <= reproductionRate then newParents else []
