@@ -1,6 +1,6 @@
 module GeneticAlgorithm where
 
-import Data.List (maximumBy)
+import Data.List (maximumBy, minimumBy)
 import Knapsack
 import System.Random
 
@@ -11,13 +11,13 @@ mutationRate :: Double
 mutationRate = 0.75
 
 reproductionRate :: Double
-reproductionRate = 0.4
+reproductionRate = 0.3
 
 maxGenerations :: Int
-maxGenerations = 100
+maxGenerations = 200
 
 selectedPopulationSize :: Int
-selectedPopulationSize = 500
+selectedPopulationSize = 1000
 
 generateInitialPopulation :: StdGen -> Int -> Int -> [[Int]]
 generateInitialPopulation _ _ 0 = []
@@ -28,9 +28,9 @@ generateInitialPopulation seed individualSize populationSize = generateIndividua
 generateIndividual :: StdGen -> Int -> [Int]
 generateIndividual seed size = take size $ randomRs (0, 1) seed
 
-determineIndividualFitness :: Knapsack -> [Int] -> Int
-determineIndividualFitness (Knapsack maxWeight _ items) individual =
-  if totalWeight > maxWeight then 0 else totalCost
+determineIndividualFitness :: Weight -> Cost -> [Item] -> [Int] -> Int
+determineIndividualFitness maxWeight minCost items individual =
+  if totalWeight > maxWeight || totalCost < minCost then 0 else totalCost
   where
     (totalWeight, totalCost) = itemStats items individual
 
@@ -44,10 +44,10 @@ itemStats (item : items) (selection : rest) = (itemWeight + restWeight, itemCost
     itemCost = if selection == 1 then cost item else 0
 
 tournament :: Knapsack -> ([Int], [Int]) -> [Int]
-tournament knapsack (x, y) = if valX > valY then x else y
+tournament (Knapsack maxWeight _ items) (x, y) = if valX > valY then x else y
   where
-    valX = determineIndividualFitness knapsack x
-    valY = determineIndividualFitness knapsack y
+    valX = determineIndividualFitness maxWeight 0 items x
+    valY = determineIndividualFitness maxWeight 0 items y
 
 selectParents :: Knapsack -> [[Int]] -> StdGen -> [[Int]]
 selectParents knapsack population seed = [p1, p2]
@@ -112,6 +112,6 @@ evolution knapsack seed = selectBest knapsack $ evolutionStep maxGenerations kna
     initialPopulation = generateInitialPopulation seed (length (items knapsack)) selectedPopulationSize
 
 selectBest :: Knapsack -> [[Int]] -> [Int]
-selectBest knapsack = maximumBy f
+selectBest (Knapsack maxWeight minCost items) = maximumBy f
   where
-    f x y = compare (determineIndividualFitness knapsack x) (determineIndividualFitness knapsack y)
+    f x y = compare (determineIndividualFitness maxWeight minCost items x) (determineIndividualFitness maxWeight minCost items y)

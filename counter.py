@@ -21,6 +21,13 @@ def parse_file(filename):
     return weights, costs
 
 
+def sum_stuff(inArr, weights, costs):
+    inArrBool = np.array(inArr) == 1
+    weights = np.sum(weights[inArrBool])
+    costs = np.sum(costs[inArrBool])
+    return weights, costs
+
+
 if __name__ == "__main__":
     filename = parse_args().file
     weights, costs = parse_file(filename)
@@ -31,6 +38,7 @@ if __name__ == "__main__":
         inArrStr = input("Input array: ").strip("[]").split(",")
         inArr = [int(num) for num in inArrStr]
 
-        inArrBool = np.array(inArr) == 1
-        print(f"Knapsack weight: {np.sum(weights[inArrBool])}")
-        print(f"Knapsack cost: {np.sum(costs[inArrBool])}")
+        w, c = sum_stuff(inArr, weights, costs)
+
+        print(f"Knapsack weight: {w}")
+        print(f"Knapsack cost: {c}")
