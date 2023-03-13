@@ -5,4 +5,4 @@ clean:
 	rm *.o *.hi flp22-fun
 
 run:
-	./flp22-fun -o 
+	./flp22-fun -o

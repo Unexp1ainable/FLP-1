@@ -14,10 +14,10 @@ reproductionRate :: Double
 reproductionRate = 0.3
 
 maxGenerations :: Int
-maxGenerations = 10
+maxGenerations = 200
 
 selectedPopulationSize :: Int
-selectedPopulationSize = 6
+selectedPopulationSize = 200
 
 generateInitialPopulation :: StdGen -> Int -> Int -> [[Int]]
 generateInitialPopulation _ _ 0 = []
@@ -52,11 +52,12 @@ tournament knapsack (x, y) = if valX > valY then x else y
 selectParents :: Knapsack -> [[Int]] -> StdGen -> [[Int]]
 selectParents knapsack population seed = [p1, p2]
   where
-    pairs = [(x, y) | x <- population, y <- population, x /= y]
-    (randomIndex1, newSeed) = randomR (0, length pairs - 1) seed
-    (randomIndex2, _) = randomR (0, length pairs - 1) newSeed
-    p1 = tournament knapsack (pairs !! randomIndex1)
-    p2 = tournament knapsack (pairs !! randomIndex2)
+    (specimen1, newSeed1) = randomR (0, length population - 1) seed
+    (specimen2, newSeed2) = randomR (0, length population - 1) newSeed1
+    (specimen3, newSeed3) = randomR (0, length population - 1) newSeed2
+    (specimen4, _) = randomR (0, length population - 1) newSeed3
+    p1 = tournament knapsack (population !! specimen1, population !! specimen2)
+    p2 = tournament knapsack (population !! specimen3, population !! specimen4)
 
 crossover :: [Int] -> [Int] -> [[Int]]
 crossover [] _ = []
@@ -88,7 +89,7 @@ nextGeneration knapsack seed parents = take (length parents) $ nextGenerationF k
 nextGenerationF :: Knapsack -> StdGen -> [[Int]] -> Int -> [[Int]]
 nextGenerationF knapsack seed parents remaining =
   if remaining <= 0
-    then 
+    then []
     else nextGenerationF knapsack newSeed2 parents (remaining - length generated) ++ generated
   where
     initialLength = length parents
@@ -112,6 +113,6 @@ evolution knapsack seed = selectBest knapsack $ evolutionStep maxGenerations kna
     initialPopulation = generateInitialPopulation seed (length (items knapsack)) selectedPopulationSize
 
 selectBest :: Knapsack -> [[Int]] -> [Int]
-selectBest knapsack = minimumBy (flip f)
+selectBest knapsack = minimumBy f
   where
     f x y = compare (determineIndividualFitness knapsack x) (determineIndividualFitness knapsack y)

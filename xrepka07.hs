@@ -5,7 +5,7 @@ import Knapsack
 import KnapsackParser
 import System.Environment (getArgs)
 import System.Exit (die)
-import System.Random (mkStdGen, newStdGen)
+import System.Random
 
 --------------------------------------
 data Mode = ECHO | BRUTEFORCE | OPTIMIZE deriving (Enum, Show)
@@ -39,45 +39,20 @@ bruteforce (Knapsack maxWeight minCost items) = if summed == 0 then Nothing else
 
 ------------------------------------
 
-input :: String
-input =
-  "Knapsack { \
-  \maxWeight: 46 \
-  \minCost: 324 \
-  \items: [ \
-  \Item { \
-  \weight: 36 \
-  \cost: 3 \
-  \} \
-  \Item { \
-  \weight: 43 \
-  \cost: 1129 \
-  \} \
-  \Item { \
-  \weight: 202 \
-  \cost: 94 \
-  \} \
-  \Item { \
-  \weight: 149 \
-  \cost: 2084 \
-  \} \
-  \] \
-  \}"
-
 main :: IO ()
 main = do
   args <- getArgs
-  let maybeMode = parseArgs ["-o"]
+  let maybeMode = parseArgs args
   case maybeMode of
     Nothing -> die "Invalid arguments."
     Just mode -> do
-      -- input <- getContents
+      input <- getContents
       case knapsackParser input of
         Left err -> putStrLn $ "Error: " ++ show err
         Right knapsack -> case mode of
           ECHO -> print knapsack
           BRUTEFORCE -> formattedBruteforce knapsack
-          OPTIMIZE -> print $ evolution knapsack (mkStdGen 5)
+          OPTIMIZE -> print $ evolution knapsack (mkStdGen 42)
       where
         formattedBruteforce knapsack = case bruteforce knapsack of
           Just solution -> print solution
