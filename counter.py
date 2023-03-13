@@ -27,9 +27,10 @@ if __name__ == "__main__":
     weights = np.array(weights)
     costs = np.array(costs)
 
-    inArrStr = input("Input array: ").strip("[]").split(",")
-    inArr = [int(num) for num in inArrStr]
+    while True:
+        inArrStr = input("Input array: ").strip("[]").split(",")
+        inArr = [int(num) for num in inArrStr]
 
-    inArrBool = np.array(inArr) == 1
-    print(f"Knapsack weight: {np.sum(weights[inArrBool])}")
-    print(f"Knapsack cost: {np.sum(costs[inArrBool])}")
+        inArrBool = np.array(inArr) == 1
+        print(f"Knapsack weight: {np.sum(weights[inArrBool])}")
+        print(f"Knapsack cost: {np.sum(costs[inArrBool])}")

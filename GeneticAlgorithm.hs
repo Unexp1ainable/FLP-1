@@ -1,6 +1,6 @@
 module GeneticAlgorithm where
 
-import Data.List (minimumBy)
+import Data.List (maximumBy)
 import Knapsack
 import System.Random
 
@@ -8,16 +8,16 @@ crossoverRate :: Double
 crossoverRate = 0.2
 
 mutationRate :: Double
-mutationRate = 0.01
+mutationRate = 0.75
 
 reproductionRate :: Double
 reproductionRate = 0.4
 
 maxGenerations :: Int
-maxGenerations = 5000
+maxGenerations = 100
 
 selectedPopulationSize :: Int
-selectedPopulationSize = 200
+selectedPopulationSize = 500
 
 generateInitialPopulation :: StdGen -> Int -> Int -> [[Int]]
 generateInitialPopulation _ _ 0 = []
@@ -29,8 +29,8 @@ generateIndividual :: StdGen -> Int -> [Int]
 generateIndividual seed size = take size $ randomRs (0, 1) seed
 
 determineIndividualFitness :: Knapsack -> [Int] -> Int
-determineIndividualFitness (Knapsack maxWeight minCost items) individual =
-  if totalWeight > maxWeight || totalCost < minCost then 0 else totalCost
+determineIndividualFitness (Knapsack maxWeight _ items) individual =
+  if totalWeight > maxWeight then 0 else totalCost
   where
     (totalWeight, totalCost) = itemStats items individual
 
@@ -112,6 +112,6 @@ evolution knapsack seed = selectBest knapsack $ evolutionStep maxGenerations kna
     initialPopulation = generateInitialPopulation seed (length (items knapsack)) selectedPopulationSize
 
 selectBest :: Knapsack -> [[Int]] -> [Int]
-selectBest knapsack = minimumBy f
+selectBest knapsack = maximumBy f
   where
     f x y = compare (determineIndividualFitness knapsack x) (determineIndividualFitness knapsack y)
