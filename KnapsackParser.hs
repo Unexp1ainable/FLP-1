@@ -12,7 +12,7 @@ parseItemWeight = do
   spaces
   _ <- string "weight: "
   weight <- many1 digit
-  _ <- string "\n"
+  spaces
   return (read weight)
 
 parseItemCost :: Parser Int
@@ -20,7 +20,7 @@ parseItemCost = do
   spaces
   _ <- string "cost: "
   cost <- many1 digit
-  _ <- string "\n"
+  spaces
   return (read cost)
 
 parseItem :: Parser Item

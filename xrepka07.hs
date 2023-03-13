@@ -38,14 +38,40 @@ bruteforce (Knapsack maxWeight minCost items) = if summed == 0 then Nothing else
     summed = sum result
 
 ------------------------------------
+
+input :: String
+input =
+  "Knapsack { \
+  \maxWeight: 46 \
+  \minCost: 324 \
+  \items: [ \
+  \Item { \
+  \weight: 36 \
+  \cost: 3 \
+  \} \
+  \Item { \
+  \weight: 43 \
+  \cost: 1129 \
+  \} \
+  \Item { \
+  \weight: 202 \
+  \cost: 94 \
+  \} \
+  \Item { \
+  \weight: 149 \
+  \cost: 2084 \
+  \} \
+  \] \
+  \}"
+
 main :: IO ()
 main = do
   args <- getArgs
-  let maybeMode = parseArgs args
+  let maybeMode = parseArgs ["-o"]
   case maybeMode of
     Nothing -> die "Invalid arguments."
     Just mode -> do
-      input <- getContents
+      -- input <- getContents
       case knapsackParser input of
         Left err -> putStrLn $ "Error: " ++ show err
         Right knapsack -> case mode of

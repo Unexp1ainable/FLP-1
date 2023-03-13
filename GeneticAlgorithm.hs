@@ -73,7 +73,7 @@ mutate [] _ = []
 mutate xs seed = take pos xs ++ [newElement] ++ drop (pos + 1) xs
   where
     (pos, _) = randomR (0, length xs - 1) seed
-    newElement = if xs !! pos == 0 then 1 else 0
+    newElement = if (xs !! pos) == 0 then 1 else 0
 
 attemptMutateAll :: [[Int]] -> StdGen -> [[Int]]
 attemptMutateAll [] _ = []
@@ -83,7 +83,13 @@ attemptMutateAll (x : xs) seed = maybeMutated : attemptMutateAll xs newSeed
     maybeMutated = if mutationRoll <= mutationRate then mutate x newSeed else x
 
 nextGeneration :: Knapsack -> StdGen -> [[Int]] -> [[Int]]
-nextGeneration knapsack seed parents = if length generated >= initialLength then take initialLength generated else nextGeneration knapsack seed parents ++ generated
+nextGeneration knapsack seed parents = take (length parents) $ nextGenerationF knapsack seed parents (length parents)
+
+nextGenerationF :: Knapsack -> StdGen -> [[Int]] -> Int -> [[Int]]
+nextGenerationF knapsack seed parents remaining =
+  if remaining <= 0
+    then 
+    else nextGenerationF knapsack newSeed2 parents (remaining - length generated) ++ generated
   where
     initialLength = length parents
     newParents = selectParents knapsack parents seed
