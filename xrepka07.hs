@@ -1,9 +1,11 @@
 module Main where
 
+import GeneticAlgorithm
 import Knapsack
 import KnapsackParser
 import System.Environment (getArgs)
 import System.Exit (die)
+import System.Random (mkStdGen, newStdGen)
 
 --------------------------------------
 data Mode = ECHO | BRUTEFORCE | OPTIMIZE deriving (Enum, Show)
@@ -49,7 +51,7 @@ main = do
         Right knapsack -> case mode of
           ECHO -> print knapsack
           BRUTEFORCE -> formattedBruteforce knapsack
-          OPTIMIZE -> print knapsack
+          OPTIMIZE -> print $ evolution knapsack (mkStdGen 5)
       where
         formattedBruteforce knapsack = case bruteforce knapsack of
           Just solution -> print solution
