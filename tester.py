@@ -32,7 +32,7 @@ for i in range(50):
 
     print("Test")
     print(test_result.strip())
-    if ref_result != "False":
+    if test_result != "False":
         inArrStr = test_result.strip("[]").split(",")
         inArr = [int(num) for num in inArrStr]
 

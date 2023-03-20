@@ -106,12 +106,14 @@ evolutionStep i knapsack seed population = evolutionStep (i - 1) knapsack newSee
   where
     (_, newSeed) = randomR (0, 99999) seed :: (Int, StdGen)
 
-evolution :: Knapsack -> StdGen -> [Int]
+evolution :: Knapsack -> StdGen -> Maybe [Int]
 evolution knapsack seed = selectBest knapsack $ evolutionStep maxGenerations knapsack seed initialPopulation
   where
     initialPopulation = generateInitialPopulation seed (length (items knapsack)) selectedPopulationSize
 
-selectBest :: Knapsack -> [[Int]] -> [Int]
-selectBest (Knapsack maxWeight minCost items) = maximumBy f
+selectBest :: Knapsack -> [[Int]] -> Maybe [Int]
+selectBest (Knapsack maxWeight minCost items) solutions = if fitnessOfFound == 0 then Nothing else Just found
   where
     f x y = compare (determineIndividualFitness maxWeight minCost items x) (determineIndividualFitness maxWeight minCost items y)
+    found = maximumBy f solutions
+    fitnessOfFound = determineIndividualFitness maxWeight minCost items found

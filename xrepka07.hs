@@ -34,9 +34,9 @@ main = do
         Left err -> putStrLn $ "Error: " ++ show err
         Right knapsack -> case mode of
           ECHO -> print knapsack
-          BRUTEFORCE -> formattedBruteforce knapsack
-          OPTIMIZE -> print $ evolution knapsack (mkStdGen 42)
+          BRUTEFORCE -> formatSolution (bruteforce knapsack)
+          OPTIMIZE -> formatSolution (evolution knapsack (mkStdGen 42))
       where
-        formattedBruteforce knapsack = case bruteforce knapsack of
+        formatSolution evaluator = case evaluator of
           Just solution -> print solution
           Nothing -> print False
