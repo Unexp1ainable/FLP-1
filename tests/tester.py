@@ -5,14 +5,14 @@ for i in range(50):
     lines = b""
     ref_result = ""
     test_result = ""
-    fname = f"backpacks/backpack{i}.txt"
+    fname = f"tests/backpacks/backpack{i}.txt"
     print(f"----- {fname} -----")
 
     with open(fname, "rb") as file:
         ref = subprocess.run(["./flp22-fun", "-b"], stdin=file, stdout=subprocess.PIPE)
         ref_result = ref.stdout.decode("utf-8").strip()
 
-    with open(f"backpacks/backpack{i}.txt", "rb") as file:
+    with open(f"tests/backpacks/backpack{i}.txt", "rb") as file:
         test = subprocess.run(["./flp22-fun", "-o"], stdin=file, stdout=subprocess.PIPE)
         test_result = test.stdout.decode("utf-8").strip()
 
