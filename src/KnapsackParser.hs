@@ -4,6 +4,8 @@
 -- Login: xrepka07              --
 -- Year: 2023                   --
 ----------------------------------
+-- Function for parsing knapsack from string
+
 module KnapsackParser where
 
 import Knapsack (Item (Item), Knapsack (Knapsack))

@@ -1,3 +1,10 @@
+----------------------------------
+-- FLP - Functional project     --
+-- Author: Samuel Repka         --
+-- Login: xrepka07              --
+-- Year: 2023                   --
+----------------------------------
+-- Definitions of necessary types
 module Knapsack where
 
 import TextEditing (formatItemListStr)

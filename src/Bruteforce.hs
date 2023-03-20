@@ -1,4 +1,11 @@
-module Bruteforce where
+----------------------------------
+-- FLP - Functional project     --
+-- Author: Samuel Repka         --
+-- Login: xrepka07              --
+-- Year: 2023                   --
+----------------------------------
+-- Implementation of the bruteforce algorithm
+module Bruteforce (bruteforce) where
 
 import Knapsack (Cost, Item (Item), Knapsack (Knapsack), Weight)
 

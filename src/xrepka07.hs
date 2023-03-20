@@ -4,6 +4,8 @@
 -- Login: xrepka07              --
 -- Year: 2023                   --
 ----------------------------------
+-- Main file
+
 module Main where
 
 import Bruteforce (bruteforce)

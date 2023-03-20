@@ -4,6 +4,8 @@
 -- Login: xrepka07              --
 -- Year: 2023                   --
 ----------------------------------
+-- Helper functions for text formating
+
 module TextEditing where
 
 -- remove last item from list
