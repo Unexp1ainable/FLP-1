@@ -1,6 +1,6 @@
 module Bruteforce where
 
-import Knapsack
+import Knapsack (Cost, Item (Item), Knapsack (Knapsack), Weight)
 
 bruteforceUnformatted :: Weight -> Cost -> [Item] -> ([Int], Weight, Cost)
 bruteforceUnformatted _ _ [] = ([], 0, 0)

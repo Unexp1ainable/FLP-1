@@ -1,8 +1,13 @@
 module GeneticAlgorithm where
 
-import Data.List (maximumBy, minimumBy)
+import Data.List (maximumBy)
 import Knapsack
-import System.Random
+  ( Cost,
+    Item (cost, weight),
+    Knapsack (Knapsack, items),
+    Weight,
+  )
+import System.Random (Random (randomR, randomRs), StdGen)
 
 crossoverRate :: Double
 crossoverRate = 0.2

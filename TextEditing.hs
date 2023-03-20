@@ -1,5 +1,13 @@
+----------------------------------
+-- FLP - Functional project     --
+-- Author: Samuel Repka         --
+-- Login: xrepka07              --
+-- Year: 2023                   --
+----------------------------------
 module TextEditing where
 
+-- remove last item from list
+-- (used for removing last '\n' from Item list)
 removeLast :: [a] -> [a]
 removeLast [] = []
 removeLast [_] = []
@@ -12,6 +20,6 @@ formatItemListStr = removeLast . (++) "\t" . foldr format ""
   where
     format :: Char -> String -> String
     format x acc
-      | x == '[' || x == ']' || x == ',' = acc
-      | x == '\n' = "\n\t" ++ acc
+      | x == '[' || x == ']' || x == ',' = acc -- remove unnecessary characters
+      | x == '\n' = "\n\t" ++ acc -- add indentation
       | otherwise = x : acc

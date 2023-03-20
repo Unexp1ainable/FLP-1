@@ -1,11 +1,23 @@
-{-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
-
-{-# HLINT ignore "Use <$>" #-}
+----------------------------------
+-- FLP - Functional project     --
+-- Author: Samuel Repka         --
+-- Login: xrepka07              --
+-- Year: 2023                   --
+----------------------------------
 module KnapsackParser where
 
-import Knapsack
+import Knapsack (Item (Item), Knapsack (Knapsack))
 import Text.Parsec
-import Text.Parsec.String
+  ( ParseError,
+    digit,
+    many1,
+    parse,
+    spaces,
+    string,
+    try,
+    (<|>),
+  )
+import Text.Parsec.String (Parser)
 
 parseItemWeight :: Parser Int
 parseItemWeight = do
